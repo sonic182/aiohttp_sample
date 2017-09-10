@@ -3,6 +3,7 @@ import argparse
 
 from aiohttp import web
 
+from app.config.logger import LOGGER
 from app.config.application import app_config
 
 
@@ -25,9 +26,9 @@ def main():
 
     args = parser.parse_args()
 
-    app = web.Application(debug=args.debug)
+    app = web.Application(debug=args.debug, logger=LOGGER)
     app_config(app)
-
+    app.logger.info('starting_app', extra={'port': args.port})
     web.run_app(app, port=args.port)
 
 

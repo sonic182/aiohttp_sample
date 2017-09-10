@@ -22,4 +22,7 @@ class BaseModel(object):
     @staticmethod
     def serialize(data):
         """Asdf."""
-        return dumps(data, default=json_util.default)
+        for item in data:
+            item['_id'] = str(item['_id'])
+        return data
+        # return dumps(data, default=json_util.default)

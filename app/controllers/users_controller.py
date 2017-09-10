@@ -9,12 +9,23 @@ class UserController(Controller):
 
     async def index(self, req):
         """Index test route."""
+        req.app.logger.info('mongo_request', extra={
+            'type': 'find',
+            'query': {}
+        })
         data = await User(req.app).find({}).to_list(None)
-        return json_response(User.serialize(data))
+        data = User.serialize(data)
+        req.app.logger.info('mongo_response', extra=data)
+        return json_response(data)
 
     async def create(self, req):
         """Do test route."""
         data = await req.json()
+        req.app.logger.info('mongo_request', extra={
+            'type': 'insert',
+            'data': data
+        })
         user = await User(req.app).insert_one(data)
         data['_id'] = str(user.inserted_id)
+        req.app.logger.info('mongo_response', extra=data)
         return json_response(data)
