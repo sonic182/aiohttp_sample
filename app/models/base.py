@@ -1,10 +1,6 @@
 """Base class for models."""
 
 
-from json import dumps
-from bson import json_util
-
-
 class BaseModel(object):
     """Base for database models."""
 
@@ -21,8 +17,7 @@ class BaseModel(object):
 
     @staticmethod
     def serialize(data):
-        """Asdf."""
+        """Basic serializer."""
         for item in data:
             item['_id'] = str(item['_id'])
         return data
-        # return dumps(data, default=json_util.default)

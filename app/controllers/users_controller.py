@@ -15,7 +15,7 @@ class UserController(Controller):
         })
         data = await User(req.app).find({}).to_list(None)
         data = User.serialize(data)
-        req.app.logger.info('mongo_response', extra=data)
+        req.app.logger.info('mongo_response', extra={'response': data})
         return json_response(data)
 
     async def create(self, req):
