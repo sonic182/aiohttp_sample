@@ -12,7 +12,8 @@ from pip.req import parse_requirements
 # parse_requirements() returns generator of pip.req.InstallRequirement objects
 REQS = [str(ir.req) for ir in parse_requirements('requirements.txt',
                                                  session='hack')]
-
+REQS2 = [str(ir.req) for ir in parse_requirements('dev-requirements.txt',
+                                                  session='hack')]
 # HERE = path.abspath(path.dirname(__file__))
 # Get the long description from the README file
 # with open(path.join(HERE, 'README.rst'), encoding='utf-8') as f:
@@ -55,5 +56,8 @@ setup(
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
     ],
-    install_requires=REQS
+    install_requires=REQS,
+    extra_requires={
+        'test': REQS2
+    }
 )
