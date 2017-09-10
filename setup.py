@@ -21,7 +21,7 @@ REQS2 = [str(ir.req) for ir in parse_requirements('dev-requirements.txt',
 
 
 setup(
-    name='aiohttp_bootstrap',
+    name='aiohttp_sample',
     version='0.0.1',
     description='Bootstrap project for aiohttp',
     # long_description=long_description,
@@ -48,11 +48,6 @@ setup(
 
         # Specify the Python versions you support here. In particular, ensure
         # that you indicate whether you support Python 2, Python 3 or both.
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.3',
-        'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
     ],
