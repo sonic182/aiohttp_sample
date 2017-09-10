@@ -6,8 +6,12 @@ python:
 # command to install dependencies
 install: "pip install -e .[test]"
 # command to run tests
+services: mongodb
 script: 
 # pytest --cov libsasscompiler tests/compile.py
-  - coverage run --source=aiohttp_sample setup.py test
+  - coverage run --source=app setup.py test
 after_success:
   coveralls
+env:
+  - MONGO_URI=mongodb://mongodb:27017/
+  - MONGO_DB=aiohttp_sample
