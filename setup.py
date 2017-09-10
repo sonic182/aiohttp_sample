@@ -52,7 +52,7 @@ setup(
         'Programming Language :: Python :: 3.6',
     ],
     install_requires=REQS,
-    extras_requires={
+    extras_require={
         'test': REQS2
     }
 )
