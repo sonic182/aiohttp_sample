@@ -1,12 +1,16 @@
 """Base class for models."""
 
 
-class BaseModel(object):
-    """Class base for database models."""
+from json import dumps
+from bson import json_util
 
-    def __init__(self, req):
+
+class BaseModel(object):
+    """Base for database models."""
+
+    def __init__(self, app):
         """Get collection instance from db."""
-        self.collection = req.app.database[self.__class__.__name__.lower()]
+        self.collection = app.database[self.__class__.__name__.lower()]
 
     def __getattribute__(self, name):
         """Override get attribute."""
@@ -14,3 +18,8 @@ class BaseModel(object):
             return object.__getattribute__(self, name)
         except AttributeError:
             return object.__getattribute__(self.collection, name)
+
+    @staticmethod
+    def serialize(data):
+        """Asdf."""
+        return dumps(data, default=json_util.default)

@@ -1,11 +1,9 @@
 """Application module."""
 
-from aiohttp import web
 from motor.motor_asyncio import AsyncIOMotorClient
 
 from app.config.settings import SETTINGS
-
-from app.controllers.users import map_users
+from app.config.routes import map_routes
 
 
 async def startup(app):
@@ -15,6 +13,8 @@ async def startup(app):
     app.database = app.mongo_client[SETTINGS['mongo']['db']]
 
 
-APP = web.Application()
-APP.on_startup.append(startup)
-map_users(APP)
+def app_config(app):
+    """Add app configs."""
+    app.on_startup.append(startup)
+    map_routes(app)
+    return app

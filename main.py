@@ -2,7 +2,8 @@
 import argparse
 
 from aiohttp import web
-from app.config.application import APP
+
+from app.config.application import app_config
 
 
 def main():
@@ -17,8 +18,17 @@ def main():
         help='application port.'
     )
 
+    parser.add_argument(
+        '--debug',
+        action='store_true',
+    )
+
     args = parser.parse_args()
-    web.run_app(APP, port=args.port)
+
+    app = web.Application(debug=args.debug)
+    app_config(app)
+
+    web.run_app(app, port=args.port)
 
 
 if __name__ == '__main__':
