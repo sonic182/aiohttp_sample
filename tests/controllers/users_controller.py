@@ -1,17 +1,7 @@
 """Users controller test."""
 
-from aiohttp.web import Application
-from app.config.application import app_config
-from app.config.logger import LOGGER
 from app.models.user import User
-
-
-async def get_client_app(test_client):
-    """Get client and app."""
-    app = Application(logger=LOGGER)
-    app_config(app)
-    client = await test_client(app)
-    return app, client
+from tests.common import get_client_app
 
 
 async def test_show_users(test_client):
