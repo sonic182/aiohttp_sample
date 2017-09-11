@@ -5,7 +5,7 @@
 
 Sample framework for aiohttp.
 
-# Development
+# Development
 
 Install packages with pip-tools:
 ```bash
@@ -18,8 +18,10 @@ pip-sync requirements.txt dev-requirements.txt
 # TODO
 
 * cookiecutter based on this sample project
-* json schemes
-* maybe better logger
+* JSON input validation with schemes
+* Maybe better logger
+* Middlewares sample (append info to request, eg: logged user)
+* Better tests
 
 # Contribute
 
