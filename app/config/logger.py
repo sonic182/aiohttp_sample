@@ -1,4 +1,4 @@
-
+"""Custom logger module."""
 import logging
 import collections
 
@@ -8,6 +8,13 @@ from app.config.settings import basepath
 class MyLoggerAdapter(logging.LoggerAdapter):
     """Handle extra params for logging message."""
 
+    def __init__(self, logger, *args):
+        """Overrides."""
+        if isinstance(args[0], dict):
+            self.app = args[0].get('app', None)
+            self.request = args[0].get('request', None)
+        super(self.__class__, self).__init__(logger, *args)
+
     def process(self, msg, extra={}, **kwargs):
         """Proccess message."""
         if isinstance(extra['extra'], dict):
@@ -16,6 +23,8 @@ class MyLoggerAdapter(logging.LoggerAdapter):
             'type': msg,
             **extra
         }
+        if self.request is not None:
+            extra['uuid'] = self.request.uuid
         extra = collections.OrderedDict(sorted(extra.items()))
         return self.__class__.print_extras(extra), kwargs
 
@@ -40,7 +49,8 @@ class MyLoggerAdapter(logging.LoggerAdapter):
         return res
 
 
-def get_logger(name='aiohttp_sample', logpath=basepath('logs', 'my.log')):
+def get_logger(name='aiohttp_sample', logpath=basepath('logs', 'my.log'),
+               debug=False):
     """Get logger instance."""
     logger = logging.getLogger(name)
     logger.setLevel(logging.DEBUG)
@@ -48,16 +58,18 @@ def get_logger(name='aiohttp_sample', logpath=basepath('logs', 'my.log')):
     file_handler = logging.FileHandler(logpath)
     file_handler.setLevel(logging.DEBUG)
 
-    console_handler = logging.StreamHandler()
-    console_handler.setLevel(logging.DEBUG)
-
     formatter = logging.Formatter(
         '%(asctime)s; LEVEL=%(levelname)s; %(message)s')
 
     file_handler.setFormatter(formatter)
-    console_handler.setFormatter(formatter)
+
+    if debug:
+        console_handler = logging.StreamHandler()
+        console_handler.setLevel(logging.DEBUG)
+        console_handler.setFormatter(formatter)
+
+        logger.addHandler(console_handler)
 
     logger.addHandler(file_handler)
-    logger.addHandler(console_handler)
 
     return MyLoggerAdapter(logger, {})
