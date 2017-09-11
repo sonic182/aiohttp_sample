@@ -3,6 +3,23 @@
 [![Coverage Status](https://coveralls.io/repos/github/sonic182/aiohttp_sample/badge.svg?branch=master)](https://coveralls.io/github/sonic182/aiohttp_sample?branch=master)
 # AIOTEST
 
+Sample framework for aiohttp.
+
+# Development
+
+Install packages with pip-tools:
+```bash
+pip install pip-tools
+pip-compile
+pip-compile dev-requirements.in
+pip-sync requirements.txt dev-requirements.txt
+```
+
+# TODO
+
+* cookiecutter based on this sample project
+* json schemes
+* maybe better logger
 
 # Contribute
 
