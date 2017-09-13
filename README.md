@@ -1,9 +1,9 @@
 
 [![Build Status](https://travis-ci.org/sonic182/aiohttp_sample.svg?branch=master)](https://travis-ci.org/sonic182/aiohttp_sample)
 [![Coverage Status](https://coveralls.io/repos/github/sonic182/aiohttp_sample/badge.svg?branch=master)](https://coveralls.io/github/sonic182/aiohttp_sample?branch=master)
-# AIOTEST
+# AIOHTTP SAMPLE
 
-Sample framework for aiohttp.
+Sample framework for aiohttp (in a future a cookiecutter).
 
 # Development
 
@@ -20,8 +20,8 @@ pip-sync requirements.txt dev-requirements.txt
 * cookiecutter based on this sample project
 * JSON input validation with schemes
 * Maybe better logger
-* Middlewares sample (append info to request, eg: logged user)
 * Better tests
+* Separate mongodb from possible base framework
 
 # Contribute
 
