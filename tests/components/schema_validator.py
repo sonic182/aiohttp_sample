@@ -41,7 +41,7 @@ def test_constrain_primitive():
     """Test constrain primitive types"""
     constrain = {
         'string': {},
-        'integer': {'type': int},
+        'integer': {'type': str},
         'float': {'type': float},
         'boolean': {'type': bool},
         'json': {
@@ -62,10 +62,17 @@ def test_constrain_primitive():
         'list': []
     })
 
+    res, err = JsonSchemaValidator(constrain).validate('{as: "df"}')
+    assert err
+
     res, err = JsonSchemaValidator(constrain).validate(json)
     assert err
     del constrain['extra_1']
     del constrain['extra_2']
+
+    res, err = JsonSchemaValidator(constrain).validate(json)
+    assert err
+    constrain['integer']['type'] = int
 
     res, err = JsonSchemaValidator(constrain).validate(json)
     assert res and not err
