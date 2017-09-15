@@ -72,7 +72,7 @@ def test_constrain_primitive():
 
 
 def test_constrain_lists_dicts():
-    """Test constrain primitive types"""
+    """Test constrain primitive types."""
     constrain = {
         'json': {
             'type': dict,
@@ -88,6 +88,12 @@ def test_constrain_lists_dicts():
                 'properties': {
                     'name': {},
                     'lastname': {},
+                    'age': {
+                        'type': list,
+                        'items': {
+                            'type': int
+                        }
+                    }
                 }
             }
         },
@@ -99,20 +105,27 @@ def test_constrain_lists_dicts():
         },
         'list': [{
             'name': 'johan',
-            'lastname': 'mogollon'
+            'lastname': 'mogollon',
+        }, {
+            'name': 'johan',
+            'lastname': 'mogollon',
+        }, {
+            'name': 'jean',
+            'lastname': 'paul',
+            'age': [12, 24]
         }]
     })
 
     res, err = JsonSchemaValidator(constrain).validate(json)
-    assert res and not err
+    assert res and err
 
     json = dumps({
         'json': {
             'integer': 42,
             'float': 12.12
         },
-        'list': [42, 61]
+        'list': [42, 61, 22]
     })
 
     res, err = JsonSchemaValidator(constrain).validate(json)
-    assert res and not err
+    assert res and err

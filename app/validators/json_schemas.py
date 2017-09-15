@@ -43,40 +43,55 @@ class JsonSchemaValidator:
 
             if key not in data:
                 errors[field] = 'Missing field'
+            else:
+                self._key_match(data[key], constrain[key], key, field, started,
+                                res, errors)
 
-            elif not isinstance(
-                    data[key], constrain[key].get('type', str)):
-                errors[field] = 'Bad data type'
+        return res, errors
 
-            elif not self._extra_validations(data[key], constrain[key]):
-                pass
-            elif isinstance(data[key], dict):
-                res2, errors2 = self.validate(
-                    data[key], field, constrain[key].get('properties', None), started)
+    def _key_match(self, obj, rules, key, field, started, res, errors):
+        """Extras validations."""
+        if not isinstance(
+                obj, rules.get('type', str)):
+            errors[field] = 'Bad data type'
+
+        elif not JsonSchemaValidator._extra_validations(
+                obj, rules):
+            pass
+
+        elif isinstance(obj, dict):
+            res2, errors2 = self.validate(
+                obj, field, rules.get(
+                    'properties', None), started)
+
+            if res2:
+                res[key] = res2
+
+            if errors2:
+                errors[key] = errors2
+
+        elif isinstance(obj, list):
+            res[key] = []
+            my_field2 = field
+            for ind, item in enumerate(obj):
+                field = my_field2
+                field += '.{}'.format(ind)
+                res[key].append(None)
+
+                res2, errors2 = self._key_match(item, rules.get(
+                    'items', {}), ind, field, started, res[key], {})
 
                 if res2:
                     res[key] = res2
+                res[key] = [x for x in res[key] if x is not None]
 
                 if errors2:
-                    errors[key] = errors2
-
-            elif isinstance(data[key], list):
-                res[key] = []
-
-                my_field2 = field
-                for ind, item in enumerate(data[key]):
-                    field = my_field2
-                    field += '.{}'.format(ind)
-                    res2, errors2 = self.validate(
-                        item, field, constrain[key], started)
-
-                    if res2:
-                        res[key].append(res2)
-
-                    if errors2:
-                        errors[key] = errors2
-            else:
-                res[key] = data[key]
+                    if errors.get(key, None) is None:
+                        errors[key] = []
+                    errors[key].append(
+                        errors2.get(ind, '') or errors2.get(field, ''))
+        else:
+            res[key] = obj
 
         return res, errors
 
