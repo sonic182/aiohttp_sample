@@ -18,17 +18,6 @@ def test_validator_needs_constrain():
     assert True
 
 
-def test_validator_data_type():
-    """Test validator recieves correct data type."""
-    valid_objects = [{}, 'foo', []]
-    for obj in valid_objects:
-        assert JsonSchemaValidator._valid_data(obj)
-
-    not_valid_objects = [1234, 1.2, False]
-    for obj in not_valid_objects:
-        assert JsonSchemaValidator._valid_data(obj) is False
-
-
 def test_validator_valid_json():
     """Test validator recieves a valid json."""
     json_str = "{'foo': 'bar'}"
@@ -38,6 +27,10 @@ def test_validator_valid_json():
     json_str = dumps({'foo': 'bar'})
     res, err = JsonSchemaValidator._convert(json_str)
     assert res
+
+    json_str = dumps({'foo': 'bar'})
+    res, err = JsonSchemaValidator._convert(1.0)
+    assert err
 
 
 def test_constrain_primitive():
@@ -230,10 +223,17 @@ def test_datetime_rule():
     constrain = {
         'birthdate': {
             'type': datetime,
-            'dformat': '%Y-%m-%d',
         }
     }
     json = {'birthdate': '1990-12-24'}
+
+    try:
+        JsonSchemaValidator(constrain).validate(json)
+        assert False
+    except AttributeError:
+        assert True
+
+    constrain['birthdate']['dformat'] = '%Y-%m-%d'
     res, err = JsonSchemaValidator(constrain).validate(json)
     assert not err and res == {
         'birthdate': datetime.strptime('1990-12-24', '%Y-%m-%d')}

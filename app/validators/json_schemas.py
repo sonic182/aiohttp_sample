@@ -137,7 +137,7 @@ class JsonSchemaValidator:
     @staticmethod
     def _convert(data):
         """Check if given data is a string, and loads it."""
-        if JsonSchemaValidator._valid_data(data):
+        if isinstance(data, (str, dict, list)):
             if isinstance(data, str):
                 try:
                     return (loads(data), False)
@@ -146,11 +146,3 @@ class JsonSchemaValidator:
             else:
                 return (data, False)
         return (False, '2')
-
-    @staticmethod
-    def _valid_data(data):
-        choices = [str, dict, list]
-        for _type in choices:
-            if isinstance(data, _type):
-                return True
-        return False
