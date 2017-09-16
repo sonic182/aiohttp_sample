@@ -33,7 +33,7 @@ class JsonSchemaValidator:
             return res, errors
 
         if err:
-            return (False, {'payload': ERRORS[err]})
+            return (None, {'payload': ERRORS[err]})
 
         my_field = field
         for key in constrain:
@@ -64,8 +64,7 @@ class JsonSchemaValidator:
                 obj, field, rules.get(
                     'properties', None), started)
 
-            if res2:
-                res[key] = res2
+            res[key] = res2 or {}
 
             if errors2:
                 errors[key] = errors2

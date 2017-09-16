@@ -1,6 +1,7 @@
 """Json schemas validator."""
 
 from json import dumps
+from json import loads
 from app.validators.json_schemas import JsonSchemaValidator
 
 
@@ -41,7 +42,7 @@ def test_constrain_primitive():
     """Test constrain primitive types"""
     constrain = {
         'string': {},
-        'integer': {'type': str},
+        'integer': {'type': int},
         'float': {'type': float},
         'boolean': {'type': bool},
         'json': {
@@ -63,23 +64,24 @@ def test_constrain_primitive():
     })
 
     res, err = JsonSchemaValidator(constrain).validate('{as: "df"}')
-    assert err
+    assert err == {'payload': 'INVALID PAYLOAD'}
 
     res, err = JsonSchemaValidator(constrain).validate(json)
-    assert err
+    assert err == {'extra_1': 'Missing field', 'extra_2': 'Missing field'}
     del constrain['extra_1']
     del constrain['extra_2']
 
+    constrain['integer']['type'] = str
     res, err = JsonSchemaValidator(constrain).validate(json)
-    assert err
-    constrain['integer']['type'] = int
+    assert err == {'integer': 'Bad data type'}
 
+    constrain['integer']['type'] = int
     res, err = JsonSchemaValidator(constrain).validate(json)
-    assert res and not err
+    assert res == loads(json)
 
 
 def test_constrain_lists_dicts():
-    """Test constrain primitive types."""
+    """Test nested structures."""
     constrain = {
         'json': {
             'type': dict,
@@ -124,7 +126,19 @@ def test_constrain_lists_dicts():
     })
 
     res, err = JsonSchemaValidator(constrain).validate(json)
-    assert res and err
+    assert res == {
+        'json': {'float': 12.12, 'integer': 42},
+        'list': [
+            {'lastname': 'mogollon', 'name': 'johan'},
+            {'lastname': 'mogollon', 'name': 'johan'},
+            {'age': [12, 24], 'lastname': 'paul', 'name': 'jean'}
+        ]}
+    assert err == {
+        'list': [
+            {'list.0.age': 'Missing field'},
+            {'list.1.age': 'Missing field'}
+        ]
+    }
 
     json = dumps({
         'json': {
@@ -135,4 +149,5 @@ def test_constrain_lists_dicts():
     })
 
     res, err = JsonSchemaValidator(constrain).validate(json)
-    assert res and err
+    assert res == {'json': {'float': 12.12, 'integer': 42}, 'list': []}
+    assert err == {'list': ['Bad data type', 'Bad data type', 'Bad data type']}
