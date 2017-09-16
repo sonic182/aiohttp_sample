@@ -1,5 +1,6 @@
 """Json schema validator module."""
 
+from re import match
 from json import loads
 from json.decoder import JSONDecodeError
 
@@ -56,7 +57,7 @@ class JsonSchemaValidator:
             errors[field] = 'Bad data type'
 
         elif not JsonSchemaValidator._extra_validations(
-                obj, rules):
+                obj, rules, errors, field):
             pass
 
         elif isinstance(obj, dict):
@@ -95,8 +96,22 @@ class JsonSchemaValidator:
         return res, errors
 
     @staticmethod
-    def _extra_validations(data, constrain):
+    def _extra_validations(data, rules, errors, field):
         """Extras validations."""
+        if isinstance(data, (int, float)):
+            if rules.get('gt', False) and not data > rules['gt']:
+                errors[field] = 'Not greater than %i' % rules['gt']
+                return False
+
+            elif rules.get('lt', False) and not data < rules['lt']:
+                errors[field] = 'Not less than %i' % rules['lt']
+                return False
+
+        if rules.get('format', False):
+            if not match(rules['format'], data):
+                errors[field] = 'Invalid format'
+                return False
+
         return True
 
     @staticmethod

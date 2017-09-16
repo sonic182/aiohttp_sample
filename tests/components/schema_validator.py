@@ -151,3 +151,44 @@ def test_constrain_lists_dicts():
     res, err = JsonSchemaValidator(constrain).validate(json)
     assert res == {'json': {'float': 12.12, 'integer': 42}, 'list': []}
     assert err == {'list': ['Bad data type', 'Bad data type', 'Bad data type']}
+
+
+def test_number_rules():
+    """Test rules on fields which are numbers."""
+    constrain = {
+        'integer': {
+            'type': int,
+            'gt': -1,
+            'lt': 101
+        },
+        'float': {
+            'type': float,
+            'gt': -1,
+            'lt': 101
+        }
+    }
+    json = {'integer': 101, 'float': -1.0}
+    res, err = JsonSchemaValidator(constrain).validate(json)
+    assert err == {'integer': 'Not less than 101',
+                   'float': 'Not greater than -1'}
+
+    json = {'integer': -1, 'float': 101.0}
+    res, err = JsonSchemaValidator(constrain).validate(json)
+    assert err == {'integer': 'Not greater than -1',
+                   'float': 'Not less than 101'}
+
+
+def test_regex_rule():
+    """Test fields ruled by regex."""
+    constrain = {
+        'number': {
+            'format': r'^\d+$',
+        }
+    }
+    json = {'number': 'one hundred'}
+    res, err = JsonSchemaValidator(constrain).validate(json)
+    assert err == {'number': 'Invalid format'} and not res
+
+    json = {'number': '42'}
+    res, err = JsonSchemaValidator(constrain).validate(json)
+    assert res == {'number': '42'} and not err
