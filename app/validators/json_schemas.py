@@ -2,6 +2,7 @@
 
 from re import match
 from json import loads
+from datetime import datetime
 from json.decoder import JSONDecodeError
 
 ERRORS = {
@@ -56,9 +57,19 @@ class JsonSchemaValidator:
 
     def _key_match(self, obj, rules, key, field, started, res, errors):
         """Extras validations."""
-        if not isinstance(
-                obj, rules.get('type', str)):
-            errors[field] = 'Bad data type'
+        if not isinstance(obj, rules.get('type', str)):
+            if rules['type'] == datetime:
+
+                if rules.get('dformat', False):
+                    try:
+                        res[key] = datetime.strptime(obj, rules['dformat'])
+                    except ValueError:
+                        errors[field] = 'Invalid format'
+                else:
+                    raise AttributeError('Missing `dformat` on datetime rule')
+
+            else:
+                errors[field] = 'Bad data type'
 
         elif not JsonSchemaValidator._extra_validations(
                 obj, rules, errors, field):

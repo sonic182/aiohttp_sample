@@ -2,6 +2,7 @@
 
 from json import dumps
 from json import loads
+from datetime import datetime
 from app.validators.json_schemas import JsonSchemaValidator
 
 
@@ -209,7 +210,7 @@ def test_default_rule():
 
 
 def test_inclusion_rule():
-    """Test fields ruled by regex."""
+    """Test fields ruled by inclusion in list."""
     constrain = {
         'fruit': {
             'in': ['apple', 'orange', 'pineapple']
@@ -222,3 +223,20 @@ def test_inclusion_rule():
     json = {'fruit': 'apple'}
     res, err = JsonSchemaValidator(constrain).validate(json)
     assert res == {'fruit': 'apple'} and not err
+
+
+def test_datetime_rule():
+    """Test fields is a datetime with custom format."""
+    constrain = {
+        'birthdate': {
+            'type': datetime,
+            'dformat': '%Y-%m-%d',
+        }
+    }
+    json = {'birthdate': '1990-12-24'}
+    res, err = JsonSchemaValidator(constrain).validate(json)
+    assert not err and res == {'birthdate': datetime.strptime('1990-12-24', '%Y-%m-%d')}
+
+    json = {'birthdate': '1990-13-24'}
+    res, err = JsonSchemaValidator(constrain).validate(json)
+    assert not res and err == {'birthdate': 'Invalid format'}
