@@ -206,3 +206,19 @@ def test_default_rule():
     json = {}
     res, err = JsonSchemaValidator(constrain).validate(json)
     assert res == {'number': 42} and not err
+
+
+def test_inclusion_rule():
+    """Test fields ruled by regex."""
+    constrain = {
+        'fruit': {
+            'in': ['apple', 'orange', 'pineapple']
+        }
+    }
+    json = {'fruit': 'cherry'}
+    res, err = JsonSchemaValidator(constrain).validate(json)
+    assert not res and err == {'fruit': 'Invalid'}
+
+    json = {'fruit': 'apple'}
+    res, err = JsonSchemaValidator(constrain).validate(json)
+    assert res == {'fruit': 'apple'} and not err

@@ -116,6 +116,11 @@ class JsonSchemaValidator:
                 errors[field] = 'Invalid format'
                 return False
 
+        if rules.get('in', False):
+            if data not in rules['in']:
+                errors[field] = 'Invalid'
+                return False
+
         return True
 
     @staticmethod
