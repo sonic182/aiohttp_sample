@@ -235,7 +235,8 @@ def test_datetime_rule():
     }
     json = {'birthdate': '1990-12-24'}
     res, err = JsonSchemaValidator(constrain).validate(json)
-    assert not err and res == {'birthdate': datetime.strptime('1990-12-24', '%Y-%m-%d')}
+    assert not err and res == {
+        'birthdate': datetime.strptime('1990-12-24', '%Y-%m-%d')}
 
     json = {'birthdate': '1990-13-24'}
     res, err = JsonSchemaValidator(constrain).validate(json)
