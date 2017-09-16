@@ -9,6 +9,7 @@ def test_validator_needs_constrain():
     """Test validator needs constrain."""
     try:
         JsonSchemaValidator('')
+        assert False
     except AttributeError:
         assert True
 
@@ -169,13 +170,13 @@ def test_number_rules():
     }
     json = {'integer': 101, 'float': -1.0}
     res, err = JsonSchemaValidator(constrain).validate(json)
-    assert err == {'integer': 'Not less than 101',
-                   'float': 'Not greater than -1'}
+    assert not res and err == {'integer': 'Not less than 101',
+                               'float': 'Not greater than -1'}
 
     json = {'integer': -1, 'float': 101.0}
     res, err = JsonSchemaValidator(constrain).validate(json)
-    assert err == {'integer': 'Not greater than -1',
-                   'float': 'Not less than 101'}
+    assert not res and err == {'integer': 'Not greater than -1',
+                               'float': 'Not less than 101'}
 
 
 def test_regex_rule():
@@ -192,3 +193,16 @@ def test_regex_rule():
     json = {'number': '42'}
     res, err = JsonSchemaValidator(constrain).validate(json)
     assert res == {'number': '42'} and not err
+
+
+def test_default_rule():
+    """Test fields ruled by regex."""
+    constrain = {
+        'number': {
+            'format': r'^\d+$',
+            'default': 42
+        }
+    }
+    json = {}
+    res, err = JsonSchemaValidator(constrain).validate(json)
+    assert res == {'number': 42} and not err

@@ -43,7 +43,11 @@ class JsonSchemaValidator:
             field += key
 
             if key not in data:
-                errors[field] = 'Missing field'
+                if constrain[key].get('default', False):
+                    res[key] = constrain[key]['default']
+
+                else:
+                    errors[field] = 'Missing field'
             else:
                 self._key_match(data[key], constrain[key], key, field, started,
                                 res, errors)
