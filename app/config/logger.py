@@ -27,7 +27,7 @@ class MyLoggerAdapter(logging.LoggerAdapter):
         if isinstance(extra['extra'], dict):
             extra = extra['extra']
 
-        if self.request:
+        if not self.request is None:
             kwargs['extra']['uuid'] = self.request.uuid
         else:
             kwargs['extra']['uuid'] = ''
