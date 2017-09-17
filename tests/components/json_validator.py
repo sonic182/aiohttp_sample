@@ -1,7 +1,6 @@
 """Json schemas validator."""
 
 from json import dumps
-from json import loads
 from datetime import datetime
 from app.validators.json import JsonValidator
 
@@ -12,25 +11,23 @@ def test_validator_needs_constrain():
         JsonValidator('')
         assert False
     except AttributeError:
-        assert True
+        pass
 
-    JsonValidator({})
-    assert True
+    assert JsonValidator({})
 
 
 def test_validator_valid_json():
     """Test validator recieves a valid json."""
-    json_str = "{'foo': 'bar'}"
-    res, err = JsonValidator._convert(json_str)
-    assert err
+    res, err = JsonValidator._convert("{'foo': 'bar'}")
+    assert err == '1' and not res
 
-    json_str = dumps({'foo': 'bar'})
-    res, err = JsonValidator._convert(json_str)
-    assert res
+    json = dumps({'foo': 'bar'})
+    res, err = JsonValidator._convert(json)
+    assert res == {'foo': 'bar'} and not err
 
-    json_str = dumps({'foo': 'bar'})
+    json = dumps({'foo': 'bar'})
     res, err = JsonValidator._convert(1.0)
-    assert err
+    assert err and not res
 
 
 def test_constrain_primitive():
@@ -49,17 +46,16 @@ def test_constrain_primitive():
         'extra_1': {},
         'extra_2': {},
     }
-    json = dumps({
+    json = {
         'string': 'foo',
         'integer': 42,
         'float': 1.10,
         'boolean': True,
         'json': {},
         'list': []
-    })
-
+    }
     res, err = JsonValidator(constrain).validate('{as: "df"}')
-    assert err == {'payload': 'INVALID PAYLOAD'}
+    assert res is None and err == {'payload': 'INVALID PAYLOAD'}
 
     res, err = JsonValidator(constrain).validate(json)
     assert err == {'extra_1': 'Missing field', 'extra_2': 'Missing field'}
@@ -72,7 +68,7 @@ def test_constrain_primitive():
 
     constrain['integer']['type'] = int
     res, err = JsonValidator(constrain).validate(json)
-    assert res == loads(json)
+    assert res == json
 
 
 def test_constrain_lists_dicts():
