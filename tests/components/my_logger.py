@@ -1,7 +1,7 @@
 """My Logger tests."""
 
-import collections
 import logging
+import collections
 from uuid import uuid1
 
 from app.config.logger import MyLoggerAdapter
@@ -35,14 +35,13 @@ def test_log_filter():
 
 def test_log_extras():
     """Test log extras not raise erros."""
-    msg = MyLoggerAdapter._parse_extras(extra={
-        'a': {
-            'b': 'b',
-            'c': 'c'
-        },
+    extra = {
+        'a': ['b', 'c'],
         'd': ['e', 'f', 'g']
-    })
-    assert msg == 'a.b=b; a.c=c; d.0=e; d.1=f; d.2=g; '
+    }
+    msg = MyLoggerAdapter._parse_extras(
+        collections.OrderedDict(sorted(extra.items())))
+    assert msg == 'a.0=b; a.1=c; d.0=e; d.1=f; d.2=g; '
 
 
 async def test_log_uuid(test_client):
