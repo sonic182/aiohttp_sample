@@ -13,4 +13,4 @@ script:
 after_success:
   coveralls
 env:
-  - MONGO_URI=mongodb://mongodb:27017/ MONGO_DB=aiohttp_sample APP_ENV=travis
+  - MONGO_URI=mongodb://127.0.0.1:27017/ MONGO_DB=aiohttp_sample APP_ENV=travis
