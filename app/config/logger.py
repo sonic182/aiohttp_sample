@@ -27,7 +27,10 @@ class MyLoggerAdapter(logging.LoggerAdapter):
         if isinstance(extra['extra'], dict):
             extra = extra['extra']
 
-        kwargs['extra']['uuid'] = self.request.uuid
+        if self.request:
+            kwargs['extra']['uuid'] = self.request.uuid
+        else:
+            kwargs['extra']['uuid'] = ''
         kwargs['extra']['type'] = msg
 
         return collections.OrderedDict(sorted(extra.items())), kwargs
