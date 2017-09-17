@@ -1,0 +1,24 @@
+version: '3'
+
+services:
+  db:
+    image: mongo:3
+
+  frontend:
+    image: nginx
+    volumes:
+      - ./nginx/:/etc/nginx
+    depends_on:
+      - web
+    ports:
+      - "5000:80"
+
+  web:
+    build: .
+    command: python3 main.py --debug
+    volumes:
+      - .:/usr/src/app
+    environment:
+    - APP_ENV=production
+    depends_on:
+      - db
