@@ -3,33 +3,33 @@
 from json import dumps
 from json import loads
 from datetime import datetime
-from app.validators.json_schemas import JsonSchemaValidator
+from app.validators.json import JsonValidator
 
 
 def test_validator_needs_constrain():
     """Test validator needs constrain."""
     try:
-        JsonSchemaValidator('')
+        JsonValidator('')
         assert False
     except AttributeError:
         assert True
 
-    JsonSchemaValidator({})
+    JsonValidator({})
     assert True
 
 
 def test_validator_valid_json():
     """Test validator recieves a valid json."""
     json_str = "{'foo': 'bar'}"
-    res, err = JsonSchemaValidator._convert(json_str)
+    res, err = JsonValidator._convert(json_str)
     assert err
 
     json_str = dumps({'foo': 'bar'})
-    res, err = JsonSchemaValidator._convert(json_str)
+    res, err = JsonValidator._convert(json_str)
     assert res
 
     json_str = dumps({'foo': 'bar'})
-    res, err = JsonSchemaValidator._convert(1.0)
+    res, err = JsonValidator._convert(1.0)
     assert err
 
 
@@ -58,20 +58,20 @@ def test_constrain_primitive():
         'list': []
     })
 
-    res, err = JsonSchemaValidator(constrain).validate('{as: "df"}')
+    res, err = JsonValidator(constrain).validate('{as: "df"}')
     assert err == {'payload': 'INVALID PAYLOAD'}
 
-    res, err = JsonSchemaValidator(constrain).validate(json)
+    res, err = JsonValidator(constrain).validate(json)
     assert err == {'extra_1': 'Missing field', 'extra_2': 'Missing field'}
     del constrain['extra_1']
     del constrain['extra_2']
 
     constrain['integer']['type'] = str
-    res, err = JsonSchemaValidator(constrain).validate(json)
+    res, err = JsonValidator(constrain).validate(json)
     assert err == {'integer': 'Bad data type'}
 
     constrain['integer']['type'] = int
-    res, err = JsonSchemaValidator(constrain).validate(json)
+    res, err = JsonValidator(constrain).validate(json)
     assert res == loads(json)
 
 
@@ -120,7 +120,7 @@ def test_constrain_lists_dicts():
         }]
     })
 
-    res, err = JsonSchemaValidator(constrain).validate(json)
+    res, err = JsonValidator(constrain).validate(json)
     assert res == {
         'json': {'float': 12.12, 'integer': 42},
         'list': [
@@ -143,7 +143,7 @@ def test_constrain_lists_dicts():
         'list': [42, 61, 22]
     })
 
-    res, err = JsonSchemaValidator(constrain).validate(json)
+    res, err = JsonValidator(constrain).validate(json)
     assert res == {'json': {'float': 12.12, 'integer': 42}, 'list': []}
     assert err == {'list': ['Bad data type', 'Bad data type', 'Bad data type']}
 
@@ -163,12 +163,12 @@ def test_number_rules():
         }
     }
     json = {'integer': 101, 'float': -1.0}
-    res, err = JsonSchemaValidator(constrain).validate(json)
+    res, err = JsonValidator(constrain).validate(json)
     assert not res and err == {'integer': 'Not less than 101',
                                'float': 'Not greater than -1'}
 
     json = {'integer': -1, 'float': 101.0}
-    res, err = JsonSchemaValidator(constrain).validate(json)
+    res, err = JsonValidator(constrain).validate(json)
     assert not res and err == {'integer': 'Not greater than -1',
                                'float': 'Not less than 101'}
 
@@ -181,11 +181,11 @@ def test_regex_rule():
         }
     }
     json = {'number': 'one hundred'}
-    res, err = JsonSchemaValidator(constrain).validate(json)
+    res, err = JsonValidator(constrain).validate(json)
     assert err == {'number': 'Invalid format'} and not res
 
     json = {'number': '42'}
-    res, err = JsonSchemaValidator(constrain).validate(json)
+    res, err = JsonValidator(constrain).validate(json)
     assert res == {'number': '42'} and not err
 
 
@@ -198,7 +198,7 @@ def test_default_rule():
         }
     }
     json = {}
-    res, err = JsonSchemaValidator(constrain).validate(json)
+    res, err = JsonValidator(constrain).validate(json)
     assert res == {'number': 42} and not err
 
 
@@ -210,11 +210,11 @@ def test_inclusion_rule():
         }
     }
     json = {'fruit': 'cherry'}
-    res, err = JsonSchemaValidator(constrain).validate(json)
+    res, err = JsonValidator(constrain).validate(json)
     assert not res and err == {'fruit': 'Invalid'}
 
     json = {'fruit': 'apple'}
-    res, err = JsonSchemaValidator(constrain).validate(json)
+    res, err = JsonValidator(constrain).validate(json)
     assert res == {'fruit': 'apple'} and not err
 
 
@@ -228,16 +228,16 @@ def test_datetime_rule():
     json = {'birthdate': '1990-12-24'}
 
     try:
-        JsonSchemaValidator(constrain).validate(json)
+        JsonValidator(constrain).validate(json)
         assert False
     except AttributeError:
         assert True
 
     constrain['birthdate']['dformat'] = '%Y-%m-%d'
-    res, err = JsonSchemaValidator(constrain).validate(json)
+    res, err = JsonValidator(constrain).validate(json)
     assert not err and res == {
         'birthdate': datetime.strptime('1990-12-24', '%Y-%m-%d')}
 
     json = {'birthdate': '1990-13-24'}
-    res, err = JsonSchemaValidator(constrain).validate(json)
+    res, err = JsonValidator(constrain).validate(json)
     assert not res and err == {'birthdate': 'Invalid format'}

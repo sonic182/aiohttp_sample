@@ -1,8 +1,15 @@
 
 from aiohttp.web import json_response
 
+from app.decorators.json import JsonValidate
 from app.controllers.base import Controller
 from app.models.user import User
+
+CONSTRAIN = {
+    'name': {
+        'format': r'^[\w\s]+$'
+    }
+}
 
 
 class UserController(Controller):
@@ -18,9 +25,10 @@ class UserController(Controller):
         req.logger.info('mongo_response', extra={'response': data})
         return json_response(data)
 
+    @JsonValidate(CONSTRAIN)
     async def create(self, req):
         """Do test route."""
-        data = await req.json()
+        data = req.payload
         req.logger.info('mongo_request', extra={
             'type': 'insert',
             'data': data,

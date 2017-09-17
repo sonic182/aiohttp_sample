@@ -33,3 +33,27 @@ async def test_create_user(test_client):
     user = await resp.json()
     assert '_id' in user
     assert user['name'] == my_user['name']
+
+
+async def test_reject_request(test_client):
+    """Test reject request."""
+    app, client = await get_client_app(test_client)
+
+    my_user = {'lastname': 'johanderson'}
+    resp = await client.post(
+        app.router['users'].url_for(_id=''),
+        json=my_user
+    )
+    assert resp.status == 403
+    assert (await resp.json()) == {'name': 'Missing field'}
+
+    my_user = {'name': 'johanderson'}
+    resp = await client.post(
+        app.router['users'].url_for(_id=''),
+        json=my_user
+    )
+    assert resp.status == 200
+
+    user = await resp.json()
+    assert '_id' in user
+    assert user['name'] == my_user['name']

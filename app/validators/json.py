@@ -1,8 +1,9 @@
 """Json schema validator module."""
 
 from re import match
-from json import loads
 from datetime import datetime
+
+from json import loads
 from json.decoder import JSONDecodeError
 
 ERRORS = {
@@ -11,7 +12,7 @@ ERRORS = {
 }
 
 
-class JsonSchemaValidator:
+class JsonValidator:
     """Json Schema validator."""
 
     def __init__(self, constrain):
@@ -71,7 +72,7 @@ class JsonSchemaValidator:
             else:
                 errors[field] = 'Bad data type'
 
-        elif not JsonSchemaValidator._extra_validations(
+        elif not JsonValidator._extra_validations(
                 obj, rules, errors, field):
             pass
 

@@ -18,11 +18,11 @@ pip-sync requirements.txt dev-requirements.txt
 # TODO
 
 * cookiecutter based on this sample project
-* JSON input validation with custom package - DONE
-* Decorator for validate json
-* Maybe better logger
-* Better tests
 * Separate mongodb from possible base framework
+* JSON input validation with custom package - DONE
+* Decorator for validate json - DONE
+* Maybe better logger - DONE
+* Better tests - DONE
 
 # Contribute
 
