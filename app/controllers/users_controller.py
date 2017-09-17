@@ -23,7 +23,7 @@ class UserController(Controller):
         data = await req.json()
         req.logger.info('mongo_request', extra={
             'type': 'insert',
-            'data': data
+            'data': data,
         })
         user = await User(req.app).insert_one(data)
         data['_id'] = str(user.inserted_id)

@@ -12,7 +12,14 @@ def basepath(*args):
     return join(dirname(__file__), '../../', *args)
 
 
-load_dotenv(basepath('config', '.env'))
+def load_environment(env='develop'):
+    load_dotenv(basepath('config', 'env.{}'.format(
+        environ.get('APP_ENV', env)
+    )))
+
+
+load_environment()
+
 
 SETTINGS = {
     'mongo': {

@@ -3,6 +3,7 @@ import argparse
 
 from aiohttp import web
 
+from app.config.settings import basepath
 from app.config.logger import get_logger
 from app.config.application import app_config
 from app.middlewares import MIDDLEWARES
@@ -27,9 +28,15 @@ def main():
 
     args = parser.parse_args()
 
+    logger = get_logger(
+        debug=args.debug,
+        info_log=basepath('logs', 'info.log'),
+        error_log=basepath('logs', 'error.log'),
+    )
+
     app = web.Application(
         debug=args.debug,
-        logger=get_logger(debug=args.debug),
+        logger=logger,
         middlewares=MIDDLEWARES
     )
     app_config(app)
