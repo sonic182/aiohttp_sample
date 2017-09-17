@@ -1,6 +1,7 @@
 """Main script."""
-import argparse
+from os import environ
 
+import argparse
 import asyncio
 import uvloop
 from aiohttp import web
@@ -44,7 +45,10 @@ def main():
         middlewares=MIDDLEWARES
     )
     app_config(app)
-    app.logger.info('starting_app', extra={'port': args.port})
+    app.logger.info('starting_app', extra={
+        'port': args.port,
+        'env': environ.get('APP_ENV', 'develop')
+    })
     web.run_app(
         app,
         port=args.port,

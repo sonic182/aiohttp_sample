@@ -9,7 +9,11 @@ from app.config.routes import map_routes
 async def startup(app):
     """Startup app."""
     # MONGO
-    app.mongo_client = AsyncIOMotorClient(io_loop=app.loop)
+    app.mongo_client = AsyncIOMotorClient(
+        SETTINGS['mongo']['uri'],
+        io_loop=app.loop,
+        serverSelectionTimeoutMS=3000
+    )
     app.database = app.mongo_client[SETTINGS['mongo']['db']]
 
 
