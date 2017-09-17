@@ -1,3 +1,5 @@
 aiohttp
+cchardet
 motor
 python-dotenv
+uvloop

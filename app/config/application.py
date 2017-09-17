@@ -13,8 +13,15 @@ async def startup(app):
     app.database = app.mongo_client[SETTINGS['mongo']['db']]
 
 
+async def cleanup(app):
+    """Cleanup app."""
+    # MONGO
+    app.mongo_client.close()
+
+
 def app_config(app):
     """Add app configs."""
     app.on_startup.append(startup)
+    app.on_cleanup.append(cleanup)
     map_routes(app)
     return app

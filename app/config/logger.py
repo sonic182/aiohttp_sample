@@ -28,7 +28,10 @@ class MyLoggerAdapter(logging.LoggerAdapter):
             extra = extra['extra']
 
         if not self.request is None:
-            kwargs['extra']['uuid'] = self.request.uuid
+            try:
+                kwargs['extra']['uuid'] = self.request.uuid
+            except AttributeError:
+                kwargs['extra']['uuid'] = ''
         else:
             kwargs['extra']['uuid'] = ''
         kwargs['extra']['type'] = msg
