@@ -1,5 +1,5 @@
 
-from app.validators.json import JsonValidator
+from json_validator.validator import JsonValidator
 from aiohttp.web import json_response
 
 

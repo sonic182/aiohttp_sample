@@ -4,7 +4,6 @@
 #
 #    pip-compile --output-file requirements.txt requirements.in
 #
-aiodns==1.1.1
 aiohttp==2.2.5
 async-timeout==1.4.0      # via aiohttp
 cchardet==2.1.1
@@ -12,8 +11,8 @@ chardet==3.0.4            # via aiohttp
 click==6.7                # via python-dotenv
 motor==1.1
 multidict==3.1.3          # via aiohttp, yarl
-pycares==2.3.0            # via aiodns
 pymongo==3.5.1            # via motor
 python-dotenv==0.7.1
+sonic182-json-validator==0.0.7
 uvloop==0.8.1
 yarl==0.12.0              # via aiohttp
