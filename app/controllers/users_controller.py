@@ -1,4 +1,7 @@
+"""Sample UserController.
 
+Minimal endpoint for users.
+"""
 from aiohttp.web import json_response
 
 from app.decorators.json import JsonValidate
@@ -13,6 +16,7 @@ CONSTRAIN = {
 
 
 class UserController(Controller):
+    """User controller."""
 
     async def index(self, req):
         """Index test route."""

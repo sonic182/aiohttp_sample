@@ -27,7 +27,7 @@ class MyLoggerAdapter(logging.LoggerAdapter):
         if isinstance(extra['extra'], dict):
             extra = extra['extra']
 
-        if not self.request is None:
+        if self.request is not None:
             try:
                 kwargs['extra']['uuid'] = self.request.uuid
             except AttributeError:
@@ -60,8 +60,10 @@ class MyLoggerAdapter(logging.LoggerAdapter):
 
 
 class MyFilter(logging.Filter):
-    def __init__(self, name='', *args, **kwargs):
-        """initialize MyFilter.
+    """Custom logger filter."""
+
+    def __init__(self, name='', **kwargs):
+        """Initialize MyFilter.
 
         This filter allows loggers or handlers to log just a specific level.
         kwargs must have levels argument with a list of levels allowed to log.
@@ -84,7 +86,9 @@ def get_logger(name='aiohttp_sample', logpath=basepath('logs', 'my.log'),
     logger.setLevel(loglevel)
 
     formatter = logging.Formatter(
-        '%(asctime)s; LEVEL=%(levelname)s; uuid=%(uuid)s; type=%(type)s; %(message)s')
+        '%(asctime)s; LEVEL=%(levelname)s; uuid=%(uuid)s; type=%(type)s; '
+        '%(message)s'
+    )
 
     if info_log is None and error_log is None:
         file_handler = logging.FileHandler(logpath)
@@ -99,12 +103,14 @@ def get_logger(name='aiohttp_sample', logpath=basepath('logs', 'my.log'),
         info_handler = logging.FileHandler(info_log)
         info_handler.setLevel(logging.INFO)
         info_handler.setFormatter(formatter)
-        info_handler.addFilter(MyFilter(levels=[logging.INFO, logging.WARNING]))
+        info_handler.addFilter(MyFilter(levels=[
+            logging.INFO, logging.WARNING]))
 
         err_handler = logging.FileHandler(error_log)
         err_handler.setLevel(logging.ERROR)
         err_handler.setFormatter(formatter)
-        err_handler.addFilter(MyFilter(levels=[logging.ERROR, logging.CRITICAL]))
+        err_handler.addFilter(MyFilter(levels=[
+            logging.ERROR, logging.CRITICAL]))
         logger.addHandler(info_handler)
         logger.addHandler(err_handler)
 

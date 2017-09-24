@@ -1,4 +1,4 @@
-
+"""Decorator for sonic182_json_validator."""
 from json_validator.validator import JsonValidator
 from aiohttp.web import json_response
 

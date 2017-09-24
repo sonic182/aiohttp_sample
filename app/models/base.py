@@ -17,7 +17,7 @@ class BaseModel(object):
 
     @staticmethod
     def serialize(data):
-        """Basic serializer."""
+        """Seriaze basic response of document."""
         for item in data:
             item['_id'] = str(item['_id'])
         return data

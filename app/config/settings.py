@@ -13,6 +13,7 @@ def basepath(*args):
 
 
 def load_environment(env='develop'):
+    """Load env.{scope} file."""
     load_dotenv(basepath('config', 'env.{}'.format(
         environ.get('APP_ENV', env)
     )))
