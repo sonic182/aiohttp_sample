@@ -2,7 +2,6 @@
 
 Minimal endpoint for users.
 """
-from aiohttp.web import json_response
 
 from app.decorators.json import JsonValidate
 from app.controllers.base import Controller
@@ -27,7 +26,7 @@ class UserController(Controller):
         data = await User(req.app).find({}).to_list(None)
         data = User.serialize(data)
         req.logger.info('mongo_response', extra={'response': data})
-        return json_response(data)
+        return self.json_response(data)
 
     @JsonValidate(CONSTRAIN)
     async def create(self, req):
@@ -40,4 +39,5 @@ class UserController(Controller):
         user = await User(req.app).insert_one(data)
         data['_id'] = str(user.inserted_id)
         req.logger.info('mongo_response', extra=data)
-        return json_response(data)
+        await self.write(req, self.json_response(data))
+        print('can continue doing stuff...')
