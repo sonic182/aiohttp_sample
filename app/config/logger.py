@@ -17,15 +17,16 @@ class MyLoggerAdapter(logging.LoggerAdapter):
 
     def process(self, msg, kwargs):
         """Proccess message."""
-        extra, kwargs = self.my_extra(msg, kwargs)
-        return self._parse_extras(extra), kwargs
+        data, kwargs = self.setup_kwargs_data(msg, kwargs)
+        return super(MyLoggerAdapter, self).process(
+            self._parse_data(data), kwargs)
 
-    def my_extra(self, msg, extra=None):
-        """Configure extras to be logged."""
-        kwargs = {'extra': {}}
-        extra = extra or {}
-        if isinstance(extra['extra'], dict):
-            extra = extra['extra']
+    def setup_kwargs_data(self, msg, kwargs=None):
+        """Configure data to be logged."""
+        data = kwargs.get('data', {})
+        if data:
+            del kwargs['data']  # param not accepted by process super.
+        kwargs['extra'] = kwargs.get('extra', {})
 
         if self.request is not None:
             try:
@@ -36,11 +37,11 @@ class MyLoggerAdapter(logging.LoggerAdapter):
             kwargs['extra']['uuid'] = ''
         kwargs['extra']['type'] = msg
 
-        return collections.OrderedDict(sorted(extra.items())), kwargs
+        return collections.OrderedDict(sorted(data.items())), kwargs
 
     @staticmethod
-    def _parse_extras(extra, key=''):
-        """Append extra params recursively.
+    def _parse_data(extra, key=''):
+        """Append data params recursively.
 
         TODO: change to secuential implementation.
         """
@@ -48,12 +49,12 @@ class MyLoggerAdapter(logging.LoggerAdapter):
         if isinstance(extra, dict):
             for _key in extra:
                 temp_key = '{}{}{}'.format(key, ('.' if key else ''), _key)
-                res += MyLoggerAdapter._parse_extras(extra[_key], temp_key)
+                res += MyLoggerAdapter._parse_data(extra[_key], temp_key)
 
         elif isinstance(extra, list):
             for ind, item in enumerate(extra):
                 temp_key = '{}{}{}'.format(key, ('.' if key else ''), ind)
-                res += MyLoggerAdapter._parse_extras(item, temp_key)
+                res += MyLoggerAdapter._parse_data(item, temp_key)
         else:
             return res + '{}={}; '.format(key, extra)
         return res

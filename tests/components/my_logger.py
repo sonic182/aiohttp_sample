@@ -33,14 +33,14 @@ def test_log_filter():
     assert True
 
 
-def test_log_extras():
-    """Test log extras not raise erros."""
-    extra = {
+def test_log_datas():
+    """Test log datas not raise erros."""
+    data = {
         'a': ['b', 'c'],
         'd': ['e', 'f', 'g']
     }
-    msg = MyLoggerAdapter._parse_extras(
-        collections.OrderedDict(sorted(extra.items())))
+    msg = MyLoggerAdapter._parse_data(
+        collections.OrderedDict(sorted(data.items())))
     assert msg == 'a.0=b; a.1=c; d.0=e; d.1=f; d.2=g; '
 
 
@@ -52,9 +52,10 @@ async def test_log_uuid(test_client):
     class CustomRequest:
         uuid = str(uuid1())
 
-    extra = {'foo': 'bar'}
+    data = {'foo': 'bar'}
     logger = MyLoggerAdapter(logger, {'app': app, 'request': CustomRequest})
-    response_extra, kwargs = logger.my_extra('a message', {'extra': extra})
-    assert kwargs == {'extra':
-                      {'uuid': CustomRequest.uuid, 'type': 'a message'}}
-    assert response_extra == collections.OrderedDict(sorted(extra.items()))
+    response_data, kwargs = logger.setup_kwargs_data('a message', {
+        'data': data})
+    assert kwargs == {'extra': {
+        'uuid': CustomRequest.uuid, 'type': 'a message'}}
+    assert response_data == collections.OrderedDict(sorted(data.items()))
