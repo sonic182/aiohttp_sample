@@ -3,7 +3,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/sonic182/aiohttp_sample/badge.svg?branch=master)](https://coveralls.io/github/sonic182/aiohttp_sample?branch=master)
 # AIOHTTP SAMPLE
 
-Sample framework for aiohttp (in a future a cookiecutter).
+Sample framework for aiohttp, see it's cookiecutter [here](https://github.com/sonic182/aiohttpwork).
 
 # Development
 
@@ -14,16 +14,6 @@ pip-compile
 pip-compile dev-requirements.in
 pip-sync requirements.txt dev-requirements.txt
 ```
-
-# TODO
-
-* cookiecutter based on this sample project
-* Separate mongodb from possible base framework
-* Not too explainfull output by json validator.
-* JSON input validation with custom package - DONE
-* Decorator for validate json - DONE
-* Maybe better logger - DONE
-* Better tests - DONE
 
 # Contribute
 
