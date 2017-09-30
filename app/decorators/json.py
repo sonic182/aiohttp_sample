@@ -13,14 +13,14 @@ class JsonValidate(object):
     def __call__(self, func):
         """Do json validation.
 
-        If there is an error, the response will be 403 and the json error.
+        If there is an error, the response will be 422 and the json error.
         """
         async def _wrapper(obj, req):
             res, err = JsonValidator(self.constrain).validate(
                 await req.text())
 
             if err:
-                return json_response(err, status=403)
+                return json_response(err, status=422)
 
             req.payload = res
             return await func(obj, req)

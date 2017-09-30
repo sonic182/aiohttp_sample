@@ -44,7 +44,7 @@ async def test_reject_request(test_client):
         app.router['users'].url_for(_id=''),
         json=my_user
     )
-    assert resp.status == 403
+    assert resp.status == 422
     assert (await resp.json()) == {'name': 'Missing field'}
 
     my_user = {'name': 'johanderson'}
