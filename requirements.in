@@ -1,5 +1,6 @@
 aiohttp
 sonic182_json_validator
+sonic182_my_logger
 cchardet
 motor
 python-dotenv

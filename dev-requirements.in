@@ -1,5 +1,6 @@
 pylint
 pytest
+pytest-coverage
 pytest-sugar
 pytest-aiohttp
 autopep8

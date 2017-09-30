@@ -1,14 +1,9 @@
 """My Logger tests."""
 
 import logging
-import collections
-from uuid import uuid1
 
-from app.config.logger import MyLoggerAdapter
 from app.config.logger import MyFilter
 from app.config.logger import get_logger
-
-from tests.common import get_client_app
 
 
 def test_get_logger():
@@ -31,31 +26,3 @@ def test_log_filter():
     logger.debug('hello world')
     logger.error('hello world')
     assert True
-
-
-def test_log_datas():
-    """Test log datas not raise erros."""
-    data = {
-        'a': ['b', 'c'],
-        'd': ['e', 'f', 'g']
-    }
-    msg = MyLoggerAdapter._parse_data(
-        collections.OrderedDict(sorted(data.items())))
-    assert msg == 'a.0=b; a.1=c; d.0=e; d.1=f; d.2=g; '
-
-
-async def test_log_uuid(test_client):
-    """Test log uuid works."""
-    app, client = await get_client_app(test_client)
-    logger = get_logger(debug=True, logpath='/tmp/sample.log').logger
-
-    class CustomRequest:
-        uuid = str(uuid1())
-
-    data = {'foo': 'bar'}
-    logger = MyLoggerAdapter(logger, {'app': app, 'request': CustomRequest})
-    response_data, kwargs = logger.setup_kwargs_data('a message', {
-        'data': data})
-    assert kwargs == {'extra': {
-        'uuid': CustomRequest.uuid, 'type': 'a message'}}
-    assert response_data == collections.OrderedDict(sorted(data.items()))
