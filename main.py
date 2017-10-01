@@ -19,10 +19,9 @@ def main():
     parser = argparse.ArgumentParser(description='Run application.')
 
     parser.add_argument(
-        'port',
+        '--port',
         type=int,
         default=8080,
-        nargs='*',
         help='application port.'
     )
 
@@ -45,7 +44,7 @@ def main():
         middlewares=MIDDLEWARES
     )
     app_config(app)
-    app.logger.info('starting_app', extra={
+    app.logger.info('starting_app', data={
         'port': args.port,
         'env': environ.get('APP_ENV', 'develop')
     })
