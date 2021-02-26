@@ -4,16 +4,37 @@
 #
 #    pip-compile --output-file requirements.txt requirements.in
 #
-aiohttp==2.2.5
-async-timeout==1.4.0      # via aiohttp
+aiohttp==3.7.4
+    # via -r requirements.in
+async-timeout==3.0.1
+    # via aiohttp
+attrs==20.3.0
+    # via aiohttp
 cchardet==2.1.1
-chardet==3.0.4            # via aiohttp
-click==6.7                # via python-dotenv
+    # via -r requirements.in
+chardet==3.0.4
+    # via aiohttp
+click==6.7
+    # via python-dotenv
+idna==3.1
+    # via yarl
 motor==1.1
-multidict==3.2.0          # via aiohttp, yarl
-pymongo==3.5.1            # via motor
+    # via -r requirements.in
+multidict==5.1.0
+    # via
+    #   aiohttp
+    #   yarl
+pymongo==3.5.1
+    # via motor
 python-dotenv==0.7.1
+    # via -r requirements.in
 sonic182-json-validator==0.0.10
+    # via -r requirements.in
 sonic182-my-logger==0.0.3
+    # via -r requirements.in
+typing-extensions==3.7.4.3
+    # via aiohttp
 uvloop==0.8.1
-yarl==0.12.0              # via aiohttp
+    # via -r requirements.in
+yarl==1.6.3
+    # via aiohttp
